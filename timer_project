@@ -1,0 +1,118 @@
+import time
+import multiprocessing
+from tkinter import ttk, messagebox
+from tkinter import *
+
+#creating a countdown class
+class Countdown:
+    def __init__(self,root):
+        self.window = root
+        self.window. geometry("310x400")
+        self.window.title("Timer")
+        self.window.config(bg="#000")
+        self.window.resizable(False,False)
+        self.pause = False
+        
+        heading=Label(root,text="Countdown Timer", font="magneto 20", bg="#000", fg="#ea3548")
+        heading.pack(pady=10)
+
+        #clock
+        Label(root,font=("Eras Demi ITC", 10, "bold"), text= "Current Time : ", bg="papaya whip").place(x=50,y=70)
+
+        def clock():
+            clock_time=time.strftime('%H:%M:%S %p')
+            current_time.config(text=clock_time)
+            current_time.after(1000,clock)
+
+        current_time=Label(self.window, font=("Eras Demi ITC", 10, "bold"), text= "", fg="#000", bg="#fff")
+        current_time.place(x=150,y=70)
+        clock()
+        
+        #timer
+        self.hrs=StringVar()
+        Entry(self.window, textvariable= self.hrs, width=2, font=" ErasDemiITC 30 bold", bg="#000", fg="#fff", bd=0).place(x=20,y=150)
+        self.hrs.set("00")
+
+        self.mins=StringVar()
+        Entry(self.window, textvariable= self.mins, width=2, font=" ErasDemiITC 30 bold", bg="#000", fg="#fff", bd=0).place(x=120,y=150)
+        self.mins.set("00")
+
+        self.secs=StringVar()
+        Entry(self.window, textvariable= self.secs, width=2, font=" ErasDemiITC 30 bold", bg="#000", fg="#fff", bd=0).place(x=220,y=150)
+        self.secs.set("00")
+
+        Label(self.window,text="Hour", font="Bahnschrift 10", bg="#000", fg="#fff").place(x=70,y=170)
+        Label(self.window,text="Min", font="Bahnschrift 10", bg="#000", fg="#fff").place(x=170,y=170)
+        Label(self.window,text="Sec", font="Bahnschrift 10", bg="#000", fg="#fff").place(x=270,y=170)
+
+        #buttons
+        button1=Button(self.window,text="Start", bg="#ea3548", bd=0, fg="#fff", width=10, height=2, font="ErasDemiITC 10 bold", command = self.start)
+        button1.place(x=60, y=250)
+
+        button2=Button(self.window,text="Pause", bg="#ea3548", bd=0, fg="#fff", width=10, height=2, font="ErasDemiITC 10 bold", command = self.pause)
+        button2.place(x=160, y=250)
+
+        button3=Button(self.window,text="Reset", bg="#ea3548", bd=0, fg="#fff", width=10, height=2, font="ErasDemiITC 10 bold", command = self.reset)
+        button3.place(x=60, y=300)
+
+        button4=Button(self.window,text="Cancel", bg="#ea3548", bd=0, fg="#fff", width=10, height=2, font="ErasDemiITC 10 bold", command = self.cancel)
+        button4.place(x=160, y=300)
+
+
+    def cancel(self):
+        self.pause = True
+        self.window.destroy()
+    def start(self):
+        self.pause = False
+        h=int(self.hrs.get())*3600
+        m=int(self.mins.get())*60
+        s=int(self.secs.get())
+        self.times= h + m + s
+
+        if  s == 0 and m == 0 and h == 0:
+            messagebox.showwarning("Warning!","\n Please enter a valid time....")
+        else:    
+            while self.times > 0:
+                minute, second= divmod(self.times, 60)
+                hour=0
+                if minute > 60:
+                    hour, minute= divmod(minute, 60)
+
+                self.secs.set(second)
+                self.mins.set(minute)
+                self.hrs.set(hour)
+
+                self.window.update()
+                time.sleep(1)
+
+                if (self.times == 0):
+                    self.secs.set("00")
+                    self.mins.set("00")
+                    self.hrs.set("00")
+
+                self.times -= 1
+    def pause(self):
+        self.pause = True
+        minute, second = divmod(self.times, 60)
+        hour = 0
+        if minute > 60:
+            hour, minute = divmod(minute, 60)
+            
+        self.secs.set(second)
+        self.mins.set(minute)
+        self.hrs.set(hour)
+
+        self.window.update()
+    def reset(self):
+        self.pause = True
+
+        self.secs.set("00")
+        self.mins.set("00")
+        self.hrs.set("00")
+
+        self.window.update()
+        
+if __name__ == "__main__":
+    root = Tk()
+    obj = Countdown(root)
+    root.mainloop()
